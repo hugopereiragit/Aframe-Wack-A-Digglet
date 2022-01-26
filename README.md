@@ -1,6 +1,10 @@
 # Aframe Wack A Digglet Game
+ 
  My first Aframe game 
+ 
+ 
  Physics imported from http://www.cannonjs.org/
+ 
  Free Assets downloaded from https://sketchfab.com/feed
  
  
