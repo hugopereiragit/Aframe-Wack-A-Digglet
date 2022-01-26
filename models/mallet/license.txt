@@ -1,0 +1,11 @@
+Model Information:
+* title:	Maya Mallet
+* source:	https://sketchfab.com/3d-models/maya-mallet-991e20703e2b42b9959c432b74b16c5d
+* author:	Lyn22 (https://sketchfab.com/Lyn22)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Maya Mallet" (https://sketchfab.com/3d-models/maya-mallet-991e20703e2b42b9959c432b74b16c5d) by Lyn22 (https://sketchfab.com/Lyn22) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

@@ -1,0 +1,223 @@
+<html>
+  <head>
+    <!-- aframe itself -->
+    <script src="https://aframe.io/releases/0.7.0/aframe.min.js"></script>
+    <!-- physics and other extras importados para utilização http://www.cannonjs.org/ para a source-->
+    <script src="//cdn.rawgit.com/donmccurdy/aframe-extras/v3.13.1/dist/aframe-extras.min.js"></script>
+    <script>
+        $ = (sel) => document.querySelector(sel)
+        $$ = (sel) => document.querySelectorAll(sel)
+        on = (elem, type, hand) => elem.addEventListener(type,hand)
+    </script>
+  </head>
+  <body>
+    <a-scene stats>
+        <a-assets>
+            <a-asset-item id="digglet"  src="models/diglet/scene.gltf"> </a-asset-item>
+            <a-asset-item id="mallet"   src="models/mallet/scene.gltf"> </a-asset-item>
+            <a-asset-item id="bat"      src="models/bat2/scene.gltf">   </a-asset-item>
+            <a-asset-item id="tree"     src="models/Tree/scene.gltf">   </a-asset-item>
+            <a-asset-item id="rock"     src="models/rock/scene.gltf">   </a-asset-item>
+        </a-assets>
+        <a-entity camera look-controls position="0 1.5 0" >
+        
+                    <a-text id="score" value="Score" position="-0.2 -0.5 -1" color="black" width="5" anchor="left"></a-text>
+                    <a-cursor>
+                    <!--Rato -->  
+                    </a-cursor>
+                    <!-- Arma -->
+                    <a-entity position="-0.8 -0.2 -4" id='weapon'
+                    static-body="shape:sphere; sphereRadius: 0.5;" >
+                        <a-entity position="0 0 0" 
+                        rotation= "-60 0 -90"
+                        gltf-model="#bat"
+                        static-body
+                        scale="2 2 2"
+                        ></a-entity>
+                    </a-entity>
+        </a-entity>
+
+        <!-- arvores com terreno -->
+        <a-entity gltf-model="#tree" position="0 0.005 -30" scale="0.05 0.05 0.05"></a-entity>
+        <a-entity gltf-model="#tree" position="0 0.006 40" scale="0.05 0.05 0.05"></a-entity>
+
+        <!--Pedras digglet -->
+        <a-entity gltf-model="#rock" position="0 0 -4" scale="3 2 2.2"></a-entity>
+        <a-entity gltf-model="#rock" position="0 0 4" scale="3 2 2.2"></a-entity>
+        <a-entity gltf-model="#rock" position="4 0 0" scale="3 2 2.2"></a-entity>
+        <a-entity gltf-model="#rock" position="-4 0 0" scale="3 2 2.2"></a-entity>
+
+        <!-- background sky -->
+        <a-sky color="white"></a-sky>
+
+
+
+
+
+        <!--bola foi o nome que dei quando estava a testar-->
+        <a-entity id='ball'
+        position="0 3 -4"
+        material="color:green;"
+        geometry="primitive:sphere; radius: 0.2;"
+        rotation="0 0 0"
+        dynamic-body
+        >
+        <a-entity id='digglet-model'  scale="0.3 0.3 0.3" gltf-model="#digglet"></a-entity>
+        </a-entity>
+
+        <a-entity id='ball2'
+        position="0 3 4"
+        material="color:green;"
+        geometry="primitive:sphere; radius: 0.2;"
+        rotation="0 0 0"
+        dynamic-body
+        >
+        <a-entity id='digglet-model' rotation="0 -180 0" scale="0.3 0.3 0.3" gltf-model="#digglet"></a-entity>
+        </a-entity>
+
+
+        <a-entity id='ball3'
+        position="-4 3 0"
+        material="color:green;"
+        geometry="primitive:sphere; radius: 0.2;"
+        rotation="0 0 0"
+        dynamic-body
+        >
+        <a-entity id='digglet-model' rotation="0 -180 0" scale="0.3 0.3 0.3" gltf-model="#digglet"></a-entity>
+        </a-entity>
+
+
+        <a-entity id='ball4'
+        position="4 3 0"
+        material="color:green;"
+        geometry="primitive:sphere; radius: 0.2;"
+        rotation="0 0 0"
+        dynamic-body
+        >
+        <a-entity id='digglet-model' rotation="0 -180 0" scale="0.3 0.3 0.3" gltf-model="#digglet"></a-entity>
+        </a-entity>
+    
+
+
+
+            
+        <a-plane color='#52430e'
+        static-body
+        rotation="-90 0 0" width="100" height="100"></a-plane>
+
+
+
+
+</a-scene>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </body>
+
+    <script>
+    let x = 0;
+    let hit = false;
+    let resetId = 0;
+    let score = 0;
+    const resetBall = () => {
+        // O $ com um selector encontra a bola na pagina a physics engine importada adiciona uma propriedade
+        // body ao elemento que contem todas as physics como gravidade.
+        // damos reset a velocidade e usamos o timeout para dar reset em 3 segundos
+        // como a physics engine está encarrege do objeto nao o Aframe utilizo body.position em vez de so position visitar https://schteppe.github.io/cannon.js/docs/classes/Body.html
+        //                                                                                                                 para documentação
+        // na velocity tem sinco no eixo do y para ela saltar pra cima inicialmente
+
+        //Nota separar o resetBall em 4 com resetball1 , 2,3 e 4 nao funcionava para a bola 4--- talvez exista limite de funções?
+        //Tambem baixava a performance mas obtia saltos aleatorios
+
+
+        //TODO randomizar a velocidade
+
+        $("#ball").body.position.set(0, 0.6,-4)
+        $("#ball").body.velocity.set(0, 5,0)
+        $("#ball").body.angularVelocity.set(0, 0,0)
+        $("#ball").body.quaternion.setFromEuler(0, 0, 0)//funciona para dar fix a rotation guide aqui https://github.com/schteppe/cannon.js/issues/240
+        hit = false
+       
+        $("#ball2").body.position.set(0, 0.6,4)
+        $("#ball2").body.velocity.set(0, 5,0)
+        $("#ball2").body.angularVelocity.set(0, 0,0)
+        $("#ball2").body.quaternion.setFromEuler(0, 0, 0)
+        hit = false
+
+        $("#ball3").body.position.set(-4, 0.6,0)
+        $("#ball3").body.velocity.set(0, 5,0)
+        $("#ball3").body.angularVelocity.set(0, 0,0)
+        $("#ball3").body.quaternion.setFromEuler(0, -33, 0)
+        hit = false
+
+        $("#ball4").body.position.set(3.9, 0.6,0)
+        $("#ball4").body.velocity.set(0, 5,0)
+        $("#ball4").body.angularVelocity.set(0, 0,0)
+        $("#ball4").body.quaternion.setFromEuler(0, 33, 0)
+        hit = false
+        //timeout deve ser limpo para impedir o insta reset automatico
+        clearTimeout(resetId)
+        resetId = setTimeout(resetBall,3000)
+    }
+    // verifica se o evento de colisao e para a bola comparando os ids dos bodys
+    // tambem verfifica se o o utilizador já antigiu a bola para nao atingirmos mais que uma vez no scor com o !hit
+    on($("#weapon"),'collide',(e)=>{
+
+        const ball = $("#ball")
+        const ball2 = $("#ball2")
+        const ball3 = $("#ball3")
+        const ball4 = $("#ball4")
+
+        if(e.detail.body.id === ball.body.id && !hit) {
+            hit = true
+            score = score + 1
+            clearTimeout(resetId)
+            resetId = setTimeout(resetBall,2000)
+            $("#score").setAttribute('text','value','Score '+score)
+        }
+        if(e.detail.body.id === ball2.body.id && !hit){
+            hit = true
+            score = score + 1
+            clearTimeout(resetId)
+            resetId = setTimeout(resetBall,2000)
+            $("#score").setAttribute('text','value','Score '+score)
+        }
+        
+        if(e.detail.body.id === ball3.body.id && !hit){
+        hit = true
+        score = score + 1
+        clearTimeout(resetId)
+        resetId = setTimeout(resetBall,2000)
+        $("#score").setAttribute('text','value','Score '+score)
+        }
+
+
+        if(e.detail.body.id === ball4.body.id && !hit){
+        hit = true
+        score = score + 1
+        clearTimeout(resetId)
+        resetId = setTimeout(resetBall,2000)
+        $("#score").setAttribute('text','value','Score '+score)
+        }
+        
+        console.log(score);
+    })
+
+setTimeout(resetBall,3000)
+
+    </script>
+</html>

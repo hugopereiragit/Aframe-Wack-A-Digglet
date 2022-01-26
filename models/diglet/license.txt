@@ -1,0 +1,11 @@
+Model Information:
+* title:	diglett
+* source:	https://sketchfab.com/3d-models/diglett-94e19953918a4b27bcd936d039c9bccf
+* author:	Beany boy (https://sketchfab.com/Beany-Boy)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "diglett" (https://sketchfab.com/3d-models/diglett-94e19953918a4b27bcd936d039c9bccf) by Beany boy (https://sketchfab.com/Beany-Boy) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
