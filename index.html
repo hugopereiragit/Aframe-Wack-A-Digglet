@@ -11,13 +11,21 @@
     </script>
   </head>
   <body>
-    <a-scene stats>
+      <!-- As physicas ajudam a fazer o contacto entre os diglets e o taco ter que ser minimamente rapido-->
+      <!-- Som so funciona em mozilla -->
+    <a-scene 
+    stats
+    physics="debug:false; restitution: 0; gravity:-6.0; contactEquationStiffness:100000000; contactEquationRelaxation: 0.5;"
+       sound="src: url(./music/super_mario.mp3); loop:true; autoplay:true; volume:0.5;">
+
+       
         <a-assets>
             <a-asset-item id="digglet"  src="models/diglet/scene.gltf"> </a-asset-item>
             <a-asset-item id="mallet"   src="models/mallet/scene.gltf"> </a-asset-item>
             <a-asset-item id="bat"      src="models/bat2/scene.gltf">   </a-asset-item>
             <a-asset-item id="tree"     src="models/Tree/scene.gltf">   </a-asset-item>
             <a-asset-item id="rock"     src="models/rock/scene.gltf">   </a-asset-item>
+            <a-asset-item id="sun"     src="models/sol/scene.gltf">   </a-asset-item>
         </a-assets>
         <a-entity camera look-controls position="0 1.5 0" >
         
@@ -37,15 +45,23 @@
                     </a-entity>
         </a-entity>
 
+        <a-entity light="type: directional; color:white; intensity: 1.4; castShadow: true;"
+       position="0 100 100"
+       gtlf-model="sun"></a-entity>
+
         <!-- arvores com terreno -->
-        <a-entity gltf-model="#tree" position="0 0.005 -30" scale="0.05 0.05 0.05"></a-entity>
-        <a-entity gltf-model="#tree" position="0 0.006 40" scale="0.05 0.05 0.05"></a-entity>
+        <a-entity gltf-model="#tree" position="0 0.005 -30" scale="0.05 0.05 0.05" shadow="cast:false"  shadow="receive:true" ></a-entity>
+        <a-entity gltf-model="#tree" position="0 0.006 40" scale="0.05 0.05 0.05" shadow="cast:false"  shadow="receive:true"></a-entity>
 
         <!--Pedras digglet -->
         <a-entity gltf-model="#rock" position="0 0 -4" scale="3 2 2.2"></a-entity>
         <a-entity gltf-model="#rock" position="0 0 4" scale="3 2 2.2"></a-entity>
         <a-entity gltf-model="#rock" position="4 0 0" scale="3 2 2.2"></a-entity>
         <a-entity gltf-model="#rock" position="-4 0 0" scale="3 2 2.2"></a-entity>
+
+        
+        
+
 
         <!-- background sky -->
         <a-sky color="white"></a-sky>
@@ -62,7 +78,9 @@
         rotation="0 0 0"
         dynamic-body
         >
-        <a-entity id='digglet-model'  scale="0.3 0.3 0.3" gltf-model="#digglet"></a-entity>
+        <a-entity id='digglet-model'  scale="0.3 0.3 0.3" gltf-model="#digglet"
+        sound="src: url(./music/atingido.wav); loop:false; autoplay:false; volume:0.7;"
+        ></a-entity>
         </a-entity>
 
         <a-entity id='ball2'
@@ -72,7 +90,9 @@
         rotation="0 0 0"
         dynamic-body
         >
-        <a-entity id='digglet-model' rotation="0 -180 0" scale="0.3 0.3 0.3" gltf-model="#digglet"></a-entity>
+        <a-entity id='digglet-model2' rotation="0 -180 0" scale="0.3 0.3 0.3" gltf-model="#digglet"
+        sound="src: url(./music/atingido.wav); loop:false; autoplay:false; volume:0.7;"
+        ></a-entity>
         </a-entity>
 
 
@@ -83,7 +103,9 @@
         rotation="0 0 0"
         dynamic-body
         >
-        <a-entity id='digglet-model' rotation="0 -180 0" scale="0.3 0.3 0.3" gltf-model="#digglet"></a-entity>
+        <a-entity id='digglet-model3' rotation="0 -180 0" scale="0.3 0.3 0.3" gltf-model="#digglet"
+        sound="src: url(./music/atingido.wav); loop:false; autoplay:false; volume:0.7;"
+        ></a-entity>
         </a-entity>
 
 
@@ -94,7 +116,9 @@
         rotation="0 0 0"
         dynamic-body
         >
-        <a-entity id='digglet-model' rotation="0 -180 0" scale="0.3 0.3 0.3" gltf-model="#digglet"></a-entity>
+        <a-entity id='digglet-model4' rotation="0 -180 0" scale="0.3 0.3 0.3" gltf-model="#digglet"
+        sound="src: url(./music/atingido.wav); loop:false; autoplay:false; volume:0.7;"
+        ></a-entity>
         </a-entity>
     
 
@@ -103,12 +127,13 @@
             
         <a-plane color='#52430e'
         static-body
-        rotation="-90 0 0" width="100" height="100"></a-plane>
-
+        rotation="-90 0 0" width="100" height="100"
+        ></a-plane>
 
 
 
 </a-scene>
+
 
 
 
@@ -149,7 +174,7 @@
         $("#ball").body.position.set(0, 0.6,-4)
         $("#ball").body.velocity.set(0, 5,0)
         $("#ball").body.angularVelocity.set(0, 0,0)
-        $("#ball").body.quaternion.setFromEuler(0, 0, 0)//funciona para dar fix a rotation guide aqui https://github.com/schteppe/cannon.js/issues/240
+        $("#ball").body.quaternion.setFromEuler(0, 0, 0)//funciona para dar fix a rotation (ficam sempre voltados para o centro) guide aqui https://github.com/schteppe/cannon.js/issues/240
         hit = false
        
         $("#ball2").body.position.set(0, 0.6,4)
@@ -181,11 +206,14 @@
         const ball2 = $("#ball2")
         const ball3 = $("#ball3")
         const ball4 = $("#ball4")
+        
 
+        //Não posso por em um unico if porcausa do som 
         if(e.detail.body.id === ball.body.id && !hit) {
             hit = true
             score = score + 1
             clearTimeout(resetId)
+            $("#digglet-model").components.sound.playSound();
             resetId = setTimeout(resetBall,2000)
             $("#score").setAttribute('text','value','Score '+score)
         }
@@ -193,6 +221,7 @@
             hit = true
             score = score + 1
             clearTimeout(resetId)
+            $("#digglet-model2").components.sound.playSound();
             resetId = setTimeout(resetBall,2000)
             $("#score").setAttribute('text','value','Score '+score)
         }
@@ -201,6 +230,7 @@
         hit = true
         score = score + 1
         clearTimeout(resetId)
+        $("#digglet-model3").components.sound.playSound();
         resetId = setTimeout(resetBall,2000)
         $("#score").setAttribute('text','value','Score '+score)
         }
@@ -210,6 +240,7 @@
         hit = true
         score = score + 1
         clearTimeout(resetId)
+        $("#digglet-model4").components.sound.playSound();
         resetId = setTimeout(resetBall,2000)
         $("#score").setAttribute('text','value','Score '+score)
         }
